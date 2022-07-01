@@ -386,6 +386,13 @@ def bvh_node_dict2objects(context, bvh_name, bvh_nodes, rotate_mode='NATIVE', fr
     return objects
 
 
+SKELETON_CORRECTION = {
+    'lhip' : (1,0,0),
+    'rhip' : (1,0,0),
+    'lknee' : (1,0,0),
+    'rknee' : (1,0,0),
+}
+
 def bvh_node_dict2armature(
         context,
         bvh_name,
@@ -396,6 +403,7 @@ def bvh_node_dict2armature(
         IMPORT_LOOP=False,
         global_matrix=None,
         use_fps_scale=False,
+        correct_skeleton=False
 ):
 
     if frame_start < 1:
@@ -447,6 +455,13 @@ def bvh_node_dict2armature(
 
         bone.head = bvh_node.rest_head_world
         bone.tail = bvh_node.rest_tail_world
+
+        if correct_skeleton:
+            if SKELETON_CORRECTION.get( bone.name ) != None:
+                print("Correcting bone ", bone.name)
+                print(bone.matrix)
+                bone.align_roll(SKELETON_CORRECTION.get( bone.name ))
+                print(bone.matrix)
 
         # Zero Length Bones! (an exceptional case)
         if (bone.head - bone.tail).length < 0.001:
@@ -650,6 +665,7 @@ def load(
         use_fps_scale=False,
         update_scene_fps=False,
         update_scene_duration=False,
+        correct_skeleton=False,
         report=print,
 ):
     import time
@@ -702,6 +718,7 @@ def load(
             IMPORT_LOOP=use_cyclic,
             global_matrix=global_matrix,
             use_fps_scale=use_fps_scale,
+            correct_skeleton=correct_skeleton,
         )
 
     elif target == 'OBJECT':
@@ -738,7 +755,7 @@ def _update_scene_fps(context, report, bvh_frame_time):
 
     scene = context.scene
     scene_fps = scene.render.fps / scene.render.fps_base
-    new_fps = 1.0 / bvh_frame_time
+    new_fps = int( 1.0 / bvh_frame_time )
 
     if scene.render.fps != new_fps or scene.render.fps_base != 1.0:
         print("\tupdating scene FPS (was %f) to BVH FPS (%f)" % (scene_fps, new_fps))

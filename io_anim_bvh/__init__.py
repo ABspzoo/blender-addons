@@ -81,18 +81,23 @@ class ImportBVH(bpy.types.Operator, ImportHelper):
             "Set the scene framerate to that of the BVH file (note that this "
             "nullifies the 'Scale FPS' option, as the scale will be 1:1)"
         ),
-        default=False,
+        default=True,
     )
     update_scene_duration: BoolProperty(
         name="Update Scene Duration",
         description="Extend the scene's duration to the BVH duration (never shortens the scene)",
-        default=False,
+        default=True,
     )
     use_cyclic: BoolProperty(
         name="Loop",
         description="Loop the animation playback",
         default=False,
     )
+    correct_skeleton: BoolProperty(
+        name="Correct bone rotations",
+        description="Correct bone rotations",
+        default=False,
+    )    
     rotate_mode: EnumProperty(
         name="Rotation",
         description="Rotation conversion",
@@ -184,6 +189,7 @@ class BVH_PT_import_transform(bpy.types.Panel):
         layout.prop(operator, "rotate_mode")
         layout.prop(operator, "axis_forward")
         layout.prop(operator, "axis_up")
+        layout.prop(operator, "correct_skeleton")
 
 
 class BVH_PT_import_animation(bpy.types.Panel):

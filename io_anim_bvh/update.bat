@@ -1,0 +1,1 @@
+copy /Y *.py "C:\Program Files\Blender Foundation\Blender 3.2\3.2\scripts\addons\io_anim_bvh\"
