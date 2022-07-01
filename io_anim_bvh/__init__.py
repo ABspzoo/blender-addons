@@ -96,7 +96,7 @@ class ImportBVH(bpy.types.Operator, ImportHelper):
     correct_skeleton: BoolProperty(
         name="Correct bone rotations",
         description="Correct bone rotations",
-        default=False,
+        default=True,
     )    
     rotate_mode: EnumProperty(
         name="Rotation",
