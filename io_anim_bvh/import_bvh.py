@@ -385,12 +385,20 @@ def bvh_node_dict2objects(context, bvh_name, bvh_nodes, rotate_mode='NATIVE', fr
 
     return objects
 
+SKELETON_CORRECTION_EXTEND_DOWN = {
+    'lhip' : True,
+    'rhip' : True,
+    'lknee' : True,
+    'rknee' : True,
+}
 
-SKELETON_CORRECTION = {
+SKELETON_CORRECTION_ALIGN_ROLL = {
     'lhip' : (1,0,0),
     'rhip' : (1,0,0),
     'lknee' : (1,0,0),
     'rknee' : (1,0,0),
+    'lshoulder' : (1,0,0),
+    'lelbow' : (1,0,0),
 }
 
 def bvh_node_dict2armature(
@@ -457,10 +465,20 @@ def bvh_node_dict2armature(
         bone.tail = bvh_node.rest_tail_world
 
         if correct_skeleton:
-            if SKELETON_CORRECTION.get( bone.name ) != None:
+            pass
+            """if SKELETON_CORRECTION_EXTEND_DOWN.get( bone.name ):
+                boneLen = (bone.head - bone.tail).length
+                print("Bone length: ", boneLen)
+                print("Bone head: ", bone.head)
+                print("Bone tail: ", bone.tail)
+                bone.tail.x = bone.head.x
+                bone.tail.y = bone.head.y - boneLen
+                bone.tail.z = bone.head.z """
+
+            if SKELETON_CORRECTION_ALIGN_ROLL.get( bone.name ) != None:
                 print("Correcting bone ", bone.name)
                 print(bone.matrix)
-                bone.align_roll(SKELETON_CORRECTION.get( bone.name ))
+                bone.align_roll(SKELETON_CORRECTION_ALIGN_ROLL.get( bone.name ))
                 print(bone.matrix)
 
         # Zero Length Bones! (an exceptional case)
